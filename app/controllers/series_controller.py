@@ -38,7 +38,8 @@ def select_by_id(id):
         serie = Series.get_series_by_id(id)
         list_series_keys = ['id','serie', 'seasons','released_date','genre','imdb_rating']
         serie = dict(zip(list_series_keys, serie))
-        return serie, HTTPStatus.OK
+        print("serieee", serie)
+        return serie , HTTPStatus.OK
     
     except TypeError:
         return {}, HTTPStatus.NOT_FOUND
