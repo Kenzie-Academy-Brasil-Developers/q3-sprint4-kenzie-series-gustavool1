@@ -6,7 +6,8 @@ from http import HTTPStatus
 import psycopg2
 from psycopg2.errors import UniqueViolation 
 
-
+def creating_table_if_not_exists():
+    Series.creating_table_if_not_exists()
 def create():
     try:
         data = request.get_json()

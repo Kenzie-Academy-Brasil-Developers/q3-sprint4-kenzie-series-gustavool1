@@ -9,11 +9,12 @@ class Series(DatabaseConnector):
         self.imbd_rating = imdb_rating
 
     
+
     @classmethod
-    def get_series(cls):
+    def creating_table_if_not_exists(cls):
         cls.get_conn_cur()
         query = """
-            CREATE TABLE IF NOT EXISTS ka_series(
+        CREATE TABLE IF NOT EXISTS ka_series(
                 id BIGSERIAL PRIMARY KEY,
                 serie VARCHAR(100) NOT NULL UNIQUE,
                 seasons INTEGER NOT NULL,
@@ -21,8 +22,17 @@ class Series(DatabaseConnector):
                 genre VARCHAR(50) NOT NULL,
                 imdb_rating FLOAT NOT NULL 
             );
-            SELECT * FROM ka_series;
         """
+        cls.cur.execute(query)
+        cls.conn.commit()
+        cls.cur.close()
+        cls.conn.close()
+
+
+    @classmethod
+    def get_series(cls):
+        cls.get_conn_cur()
+        query = """SELECT * FROM ka_series;"""
         cls.cur.execute(query)
     
         series_list = cls.cur.fetchall()
@@ -35,18 +45,7 @@ class Series(DatabaseConnector):
     @classmethod
     def get_series_by_id(cls, id):
         cls.get_conn_cur()
-        query = """ 
-            CREATE TABLE IF NOT EXISTS ka_series(
-                id BIGSERIAL PRIMARY KEY,
-                serie VARCHAR(100) NOT NULL UNIQUE,
-                seasons INTEGER NOT NULL,
-                released_date DATE NOT NULL,
-                genre VARCHAR(50) NOT NULL,
-                imdb_rating FLOAT NOT NULL 
-                );
-            SELECT * FROM ka_series WHERE id= %s 
-        """
-        print(query)
+        query = """SELECT * FROM ka_series WHERE id= %s"""
         cls.cur.execute(query, [id])
         serie = cls.cur.fetchone()
 
@@ -67,14 +66,6 @@ class Series(DatabaseConnector):
         self.get_conn_cur()
 
         query = """
-            CREATE TABLE IF NOT EXISTS ka_series(
-            id BIGSERIAL PRIMARY KEY,
-            serie VARCHAR(100) NOT NULL UNIQUE,
-            seasons INTEGER NOT NULL,
-            released_date DATE NOT NULL,
-            genre VARCHAR(50) NOT NULL,
-            imdb_rating FLOAT NOT NULL 
-            );
             INSERT INTO ka_series  
 	            (serie, seasons,released_date,genre,imdb_rating)
             VALUES
